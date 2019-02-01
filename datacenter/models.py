@@ -143,4 +143,4 @@ class Match(models.Model):
 #    away_team_line_5_count = models.CharField(max_length=100, blank=True)
 #    away_team_line_6_count = models.CharField(max_length=100, blank=True)
     def __str__(self):
-        return self.match_date                                                                  
+        return '%s %s %s %s' % (self.match_date_weekday, self.match_date_day, self.match_date_month, self.match_date_year)

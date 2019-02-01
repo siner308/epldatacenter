@@ -223,6 +223,15 @@ def register_formations(match, driver):
         match.home_team_line_4_count = home_formation[3]
     except:
         match.home_team_line_4_count = 0
+    try:
+        match.home_team_line_5_count = home_formation[4]
+    except:
+        match.home_team_line_5_count = 0
+    try:
+        match.home_team_line_6_count = home_formation[5]
+    except:
+        match.home_team_line_6_count = 0
+
     match.away_team_line_1_count = away_formation[0]
     match.away_team_line_2_count = away_formation[1]
     match.away_team_line_3_count = away_formation[2]
@@ -230,6 +239,14 @@ def register_formations(match, driver):
         match.away_team_line_4_count = away_formation[3]
     except:
         match.away_team_line_4_count = 0
+    try:
+        match.away_team_line_5_count = away_formation[4]
+    except:
+        match.away_team_line_5_count = 0
+    try:
+        match.away_team_line_6_count = away_formation[5]
+    except:
+        match.away_team_line_6_count = 0
     match.save()
     return match, driver
 
@@ -327,13 +344,13 @@ def start(key):
         html, parsed_html, match_date = get_latest_match_date(html)
         if not match_date:
             break
+        match_date = match_date.split(' ')
         while True:
             link = None
             parsed_html, link = get_latest_match_link(parsed_html)
             if not link:
                 break
             match = None
-            match_date = match_date.split(' ')
             match = Match.objects.create(match_date_weekday=match_date[0], match_date_day=match_date[1], match_date_month=match_date[2], match_date_year=match_date[3])
             result = crawling_and_create_match_database(match, link)
 

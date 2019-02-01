@@ -205,14 +205,24 @@ def register_team_players(match, team):
 
 
 def register_all_players(match, driver):
-    teams = driver.find_elements_by_class_name("matchLineupTeamContainer")
+    while True:
+        try:
+            teams = driver.find_elements_by_class_name("matchLineupTeamContainer")
+            break
+        except:
+            pass
     match = register_team_players(match, teams[0])
     match = register_team_players(match, teams[1])
     return match, driver
 
 
 def register_formations(match, driver):
-    formations = driver.find_elements_by_class_name("matchTeamFormation")
+    while True:
+        try:
+            formations = driver.find_elements_by_class_name("matchTeamFormation")
+            break
+        except:
+            pass
     print('%s vs %s' % (formations[0].text, formations[1].text))
     home_formation = formations[0].text.split('-')
     away_formation = formations[1].text.split('-')
@@ -254,7 +264,12 @@ def register_formations(match, driver):
 def click_line_up_button(driver, link):
     driver.get(link)
     time.sleep(2)
-    driver.find_elements_by_class_name("matchCentreSquadLabelContainer")[0].click()
+    while True:
+        try:
+            driver.find_elements_by_class_name("matchCentreSquadLabelContainer")[0].click()
+            break
+        except:
+            pass
     time.sleep(2)
     return driver
 
@@ -266,13 +281,28 @@ def setup_chrome():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("disable-gpu")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome("./chromedriver", chrome_options=chrome_options)
+    while True:
+        try:
+            driver = webdriver.Chrome("./chromedriver", chrome_options=chrome_options)
+            break
+        except:
+            pass
     return driver
 
 
 def register_score(match, driver):
-    scorebox_container = driver.find_elements_by_class_name("scoreboxContainer")[0]
-    score = scorebox_container.find_elements_by_class_name("matchScoreContainer")[0]
+    while True:
+        try:
+            scorebox_container = driver.find_elements_by_class_name("scoreboxContainer")[0]
+            break
+        except:
+            pass
+    while True:
+        try:
+            score = scorebox_container.find_elements_by_class_name("matchScoreContainer")[0]
+            break
+        except:
+            pass
     score = score.text.split('-')
     match.home_team_goal = score[0]
     match.away_team_goal = score[1]
@@ -282,11 +312,36 @@ def register_score(match, driver):
 
 
 def register_team_name(match, driver):
-    teams_container = driver.find_elements_by_class_name("teamsContainer")[0]
-    home_team = teams_container.find_elements_by_class_name("home")[0]
-    home_team_name = home_team.find_elements_by_class_name("long")[0].text
-    away_team = teams_container.find_elements_by_class_name("away")[0]
-    away_team_name = away_team.find_elements_by_class_name("long")[0].text
+    while True:
+        try:
+            teams_container = driver.find_elements_by_class_name("teamsContainer")[0]
+            break
+        except:
+            pass
+    while True:
+        try:
+            home_team = teams_container.find_elements_by_class_name("home")[0]
+            break
+        except:
+            pass
+    while True:
+        try:
+            home_team_name = home_team.find_elements_by_class_name("long")[0].text
+            break
+        except:
+            pass
+    while True:
+        try:
+            away_team = teams_container.find_elements_by_class_name("away")[0]
+            break
+        except:
+            pass
+    while True:
+        try:
+            away_team_name = away_team.find_elements_by_class_name("long")[0].text
+            break
+        except:
+            pass
     match.home_team_name = home_team_name
     match.away_team_name = away_team_name
     print("%s vs %s" % (home_team_name, away_team_name))
@@ -320,7 +375,7 @@ def get_latest_match_date(html):
     date_end = '</strong>'
     target = html.find(tag)
     if target == -1:
-        return html, None
+        return html, None, None
     html = html[target + 17:]
     date = html[html.find(date_start) + 8:html.find(date_end)]
     next_date = html.find(tag)

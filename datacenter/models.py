@@ -20,7 +20,10 @@ class Player(models.Model):
 
 class Match(models.Model):
     # match date
-    match_date = models.CharField(max_length=100, blank=True)
+    match_date_day = models.CharField(max_length=100, blank=True)
+    match_date_month = models.CharField(max_length=100, blank=True)
+    match_date_weekday = models.CharField(max_length=100, blank=True)
+    match_date_year = models.CharField(max_length=100, blank=True)
     # home team name
     home_team_name = models.CharField(max_length=100, blank=True)
     # home team goal
@@ -78,9 +81,12 @@ class Match(models.Model):
     home_team_player_sub_6_position = models.CharField(max_length=100, blank=True)
     home_team_player_sub_7_position = models.CharField(max_length=100, blank=True)
     # count of position
-    home_team_defender_count = models.CharField(max_length=100, blank=True)
-    home_team_midfielder_count = models.CharField(max_length=100, blank=True)
-    home_team_forward_count = models.CharField(max_length=100, blank=True)
+    home_team_line_1_count = models.CharField(max_length=100, blank=True)
+    home_team_line_2_count = models.CharField(max_length=100, blank=True)
+    home_team_line_3_count = models.CharField(max_length=100, blank=True)
+    home_team_line_4_count = models.CharField(max_length=100, blank=True)
+#    home_team_line_5_count = models.CharField(max_length=100, blank=True)
+#    home_team_line_6_count = models.CharField(max_length=100, blank=True)
     # away team name
     away_team_name = models.CharField(max_length=100, blank=True)
     # away team goal
@@ -128,10 +134,13 @@ class Match(models.Model):
     away_team_player_8_position = models.CharField(max_length=100, blank=True)
     away_team_player_9_position = models.CharField(max_length=100, blank=True)
     away_team_player_10_position = models.CharField(max_length=100, blank=True)
-    # team count of position
-    away_team_defender_count = models.CharField(max_length=100, blank=True)
-    away_team_midfielder_count = models.CharField(max_length=100, blank=True)
-    away_team_forward_count = models.CharField(max_length=100, blank=True)
-   
+    away_team_player_10_position = models.CharField(max_length=100, blank=True)
+   # team count of position
+    away_team_line_1_count = models.CharField(max_length=100, blank=True)
+    away_team_line_2_count = models.CharField(max_length=100, blank=True)
+    away_team_line_3_count = models.CharField(max_length=100, blank=True)
+    away_team_line_4_count = models.CharField(max_length=100, blank=True)
+#    away_team_line_5_count = models.CharField(max_length=100, blank=True)
+#    away_team_line_6_count = models.CharField(max_length=100, blank=True)
     def __str__(self):
         return self.match_date                                                                  

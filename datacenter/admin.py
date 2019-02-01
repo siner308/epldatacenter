@@ -39,9 +39,17 @@ class MatchAdmin(admin.ModelAdmin):
         home_team_formation = '%s-%s-%s' % (obj.home_team_line_1_count, obj.home_team_line_2_count, obj.home_team_line_3_count)
         if obj.home_team_line_4_count != '0':
             home_team_formation = '%s-%s' % (home_team_formation, obj.home_team_line_4_count)
+        if obj.home_team_line_5_count != '0':
+            home_team_formation = '%s-%s' % (home_team_formation, obj.home_team_line_5_count)
+        if obj.home_team_line_6_count != '0':
+            home_team_formation = '%s-%s' % (home_team_formation, obj.home_team_line_6_count)
         away_team_formation = '%s-%s-%s' % (obj.away_team_line_1_count, obj.away_team_line_2_count, obj.away_team_line_3_count)
         if obj.away_team_line_4_count != '0':
             away_team_formation = '%s-%s' % (away_team_formation, obj.away_team_line_4_count)
+        if obj.away_team_line_5_count != '0':
+            away_team_formation = '%s-%s' % (away_team_formation, obj.away_team_line_5_count)
+        if obj.away_team_line_6_count != '0':
+            away_team_formation = '%s-%s' % (away_team_formation, obj.away_team_line_5_count)
         return '%s : %s' % (home_team_formation, away_team_formation)
 
 

@@ -49,7 +49,7 @@ class MatchAdmin(admin.ModelAdmin):
         if obj.away_team_line_5_count != '0':
             away_team_formation = '%s-%s' % (away_team_formation, obj.away_team_line_5_count)
         if obj.away_team_line_6_count != '0':
-            away_team_formation = '%s-%s' % (away_team_formation, obj.away_team_line_5_count)
+            away_team_formation = '%s-%s' % (away_team_formation, obj.away_team_line_6_count)
         return '%s : %s' % (home_team_formation, away_team_formation)
 
 

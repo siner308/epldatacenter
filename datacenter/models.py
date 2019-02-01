@@ -85,8 +85,8 @@ class Match(models.Model):
     home_team_line_2_count = models.CharField(max_length=100, blank=True)
     home_team_line_3_count = models.CharField(max_length=100, blank=True)
     home_team_line_4_count = models.CharField(max_length=100, blank=True)
-#    home_team_line_5_count = models.CharField(max_length=100, blank=True)
-#    home_team_line_6_count = models.CharField(max_length=100, blank=True)
+    home_team_line_5_count = models.CharField(max_length=100, blank=True)
+    home_team_line_6_count = models.CharField(max_length=100, blank=True)
     # away team name
     away_team_name = models.CharField(max_length=100, blank=True)
     # away team goal
@@ -140,7 +140,7 @@ class Match(models.Model):
     away_team_line_2_count = models.CharField(max_length=100, blank=True)
     away_team_line_3_count = models.CharField(max_length=100, blank=True)
     away_team_line_4_count = models.CharField(max_length=100, blank=True)
-#    away_team_line_5_count = models.CharField(max_length=100, blank=True)
-#    away_team_line_6_count = models.CharField(max_length=100, blank=True)
+    away_team_line_5_count = models.CharField(max_length=100, blank=True)
+    away_team_line_6_count = models.CharField(max_length=100, blank=True)
     def __str__(self):
         return '%s %s %s %s' % (self.match_date_weekday, self.match_date_day, self.match_date_month, self.match_date_year)

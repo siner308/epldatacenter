@@ -409,7 +409,8 @@ def get_season_html(key):
 
 def start(key):
     html = get_season_html(key)
-
+    season_arr = key.split('/')
+    season = season_arr[0] + season_arr[1]
     while True:
         html, parsed_html, match_date = get_latest_match_date(html)
         if not match_date:
@@ -427,6 +428,6 @@ def start(key):
                 print("not link!")
                 break
             match = None
-            match = Match.objects.create(match_date_weekday=match_date_weekday, match_date_day=match_date_day, match_date_month=match_date_month, match_date_year=match_date_year)
+            match = Match.objects.create(season=season, match_date_weekday=match_date_weekday, match_date_day=match_date_day, match_date_month=match_date_month, match_date_year=match_date_year)
             result = crawling_and_create_match_database(match, link)
 

@@ -1,3 +1,4 @@
+import os
 import time
 import cv2
 import numpy
@@ -205,77 +206,29 @@ def split_starters_by_positions(match, players):
 
 
 def register_team_players(match, team):
-    starters = team.text.split('Substitutes\n')[0]
-    substitutes = team.text.split('Substitutes\n')[1]
-    match = split_starters_by_positions(match, starters)
-    match = register_substitutes(match, substitutes)
+    match = split_starters_by_positions(match, team)
     return match
 
 
-def register_all_players(match, driver):
+def register_all_players(arr, driver):
     while True:
         try:
-            teams = driver.find_elements_by_class_name("matchLineupTeamContainer")
+            teams = driver.find_elements_by_class_name("teamList")
             break
         except:
             pass
-    match = register_team_players(match, teams[0])
-    match = register_team_players(match, teams[1])
-    return match, driver
+    arr = register_team_players(arr, teams[0])
+    arr = register_team_players(arr, teams[1])
+    return arr, driver
 
 
-def register_formations(match, driver):
-    while True:
-        try:
-            formations = driver.find_elements_by_class_name("matchTeamFormation")
-            break
-        except:
-            pass
-    print('%s vs %s' % (formations[0].text, formations[1].text))
-    home_formation = formations[0].text.split('-')
-    away_formation = formations[1].text.split('-')
-    match.home_team_line_1_count = home_formation[0]
-    match.home_team_line_2_count = home_formation[1]
-    match.home_team_line_3_count = home_formation[2]
-    try: 
-        match.home_team_line_4_count = home_formation[3]
-    except:
-        match.home_team_line_4_count = 0
-    try:
-        match.home_team_line_5_count = home_formation[4]
-    except:
-        match.home_team_line_5_count = 0
-    try:
-        match.home_team_line_6_count = home_formation[5]
-    except:
-        match.home_team_line_6_count = 0
-
-    match.away_team_line_1_count = away_formation[0]
-    match.away_team_line_2_count = away_formation[1]
-    match.away_team_line_3_count = away_formation[2]
-    try:
-        match.away_team_line_4_count = away_formation[3]
-    except:
-        match.away_team_line_4_count = 0
-    try:
-        match.away_team_line_5_count = away_formation[4]
-    except:
-        match.away_team_line_5_count = 0
-    try:
-        match.away_team_line_6_count = away_formation[5]
-    except:
-        match.away_team_line_6_count = 0
-    match.save()
-    return match, driver
-
-
-def click_line_up_button(driver, link):
+def click_squad_button(driver, link):
     driver.get(link)
     time.sleep(2)
     while True:
         try:
             driver.find_elements_by_class_name("matchCentreSquadLabelContainer")[0].click()
-            print("line up button clicked")
+            print("squad button clicked")
             break
         except:
             pass
@@ -299,28 +252,7 @@ def setup_chrome():
     return driver
 
 
-def register_score(match, driver):
-    while True:
-        try:
-            scorebox_container = driver.find_elements_by_class_name("scoreboxContainer")[0]
-            break
-        except:
-            pass
-    while True:
-        try:
-            score = scorebox_container.find_elements_by_class_name("matchScoreContainer")[0]
-            break
-        except:
-            pass
-    score = score.text.split('-')
-    match.home_team_goal = score[0]
-    match.away_team_goal = score[1]
-    print("%s : %s" % (score[0], score[1]))
-    match.save()
-    return match, driver
-
-
-def register_team_name(match, driver):
+def register_team_name(arr, driver):
     while True:
         try:
             teams_container = driver.find_elements_by_class_name("teamsContainer")[0]
@@ -357,21 +289,20 @@ def register_team_name(match, driver):
     away_team_name, created = TeamName.objects.get_or_create(name=away_team_name)
     print(home_team_name)
     print(away_team_name)
-    match.home_team_name = home_team_name
-    match.away_team_name = away_team_name
     print("%s vs %s" % (home_team_name, away_team_name))
-    match.save()
-    return match, driver
+    arr.append(home_team_name.pk)
+    arr.append(away_team_name.pk)
+    arr.append(home_team_name.name)
+    arr.append(away_team_name.name)
+    return arr, driver
 
 
-def crawling_and_create_match_database(match, link):
+def crawling_and_create_match_database(arr, link):
     driver = setup_chrome()
-    driver = click_line_up_button(driver, link)
-    match, driver = register_team_name(match, driver)
-    match, driver = register_score(match, driver)
-    match, driver = register_formations(match, driver)
-    match, driver = register_all_players(match, driver)
-    return 'done'
+    driver = click_squad_button(driver, link)
+    arr, driver = register_team_name(arr, driver)
+#    arr, driver = register_all_players(arr, driver)
+    return arr
 
 def get_latest_match_link(html):
     href_start = 'data-href="//'
@@ -393,6 +324,9 @@ def get_latest_match_date(html):
         return html, None, None
     html = html[target + 17:]
     date = html[html.find(date_start) + 8:html.find(date_end)]
+    if date == 'Date To Be Confirmed':
+        print(date)
+        return html, None, date
     next_date = html.find(tag)
     parsed_html = html[:next_date]
     html = html[next_date:]
@@ -410,23 +344,35 @@ def get_season_html(key):
 def start(key):
     html = get_season_html(key)
 
+    os.system('echo "weekday,day,month,year,home,away" >> result.csv')
     while True:
         html, parsed_html, match_date = get_latest_match_date(html)
         if not match_date:
             print("not match data!!")
             break
+        if match_date == 'Date To Be Confirmed':
+            continue
         match_date = match_date.split(' ')
         match_date_weekday, created = DateWeekday.objects.get_or_create(weekday=match_date[0])
         match_date_day = match_date[1]
         match_date_month, created = DateMonth.objects.get_or_create(month=match_date[2])
         match_date_year = match_date[3]
+        
         while True:
             link = None
+            datearr = [match_date_weekday.pk, match_date_day, match_date_month.pk, match_date_year]
             parsed_html, link = get_latest_match_link(parsed_html)
             if not link:
                 print("not link!")
                 break
-            match = None
-            match = Match.objects.create(match_date_weekday=match_date_weekday, match_date_day=match_date_day, match_date_month=match_date_month, match_date_year=match_date_year)
-            result = crawling_and_create_match_database(match, link)
-
+            arr = datearr
+            arr = crawling_and_create_match_database(arr, link)
+            result = ''
+            i = 0
+            for text in arr:
+                result = result + str(text)
+                if i + 1 != len(arr):
+                    result = result + ','
+                    i = i + 1
+            os.system('echo "%s" >> result.csv' % result)
+            arr = datearr

@@ -14,7 +14,10 @@ from datacenter.models import Match
 
 
 def register_substitute(match, player, position):
-    position, created = PlayerPosition.objects.get_or_create(position=position)
+    try:
+        position, created = PlayerPosition.objects.get_or_create(position=position)
+    except:
+        position = None
     if not match.home_team_player_sub_1:
         match.home_team_player_sub_1 = player
         match.home_team_player_sub_1_position = position
@@ -65,6 +68,7 @@ def register_substitute(match, player, position):
 
 def parse_and_get_or_create_player(player):
     player_data = player.split('\n')
+    print(player_data)
     shirt_number = player_data[0]
     player_name = player_data[1]
     position = None
@@ -99,7 +103,10 @@ def register_substitutes(match, substitutes):
 
 
 def register_starter(match, player, position):
-    position, created = PlayerPosition.objects.get_or_create(position=position)
+    try:
+        position, created = PlayerPosition.objects.get_or_create(position=position)
+    except:
+        position = None
     if not match.home_team_player_1:
         match.home_team_player_1 = player
         match.home_team_player_1_position = position
@@ -369,7 +376,10 @@ def crawling_and_create_match_database(match, link):
     driver = click_line_up_button(driver, link)
     match, driver = register_team_name(match, driver)
     match, driver = register_score(match, driver)
-    match, driver = register_formations(match, driver)
+    try:
+        match, driver = register_formations(match, driver)
+    except:
+        pass
     match, driver = register_all_players(match, driver)
     return 'done'
 

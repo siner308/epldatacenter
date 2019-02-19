@@ -301,6 +301,7 @@ def crawling_and_create_match_database(arr, link):
     driver = setup_chrome()
     driver = click_squad_button(driver, link)
     arr, driver = register_team_name(arr, driver)
+    driver.close()
 #    arr, driver = register_all_players(arr, driver)
     return arr
 

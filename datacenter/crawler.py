@@ -214,7 +214,10 @@ def split_starters_by_positions(match, players):
 def register_team_players(match, team):
     starters = team.text.split('Substitutes\n')[0]
     substitutes = team.text.split('Substitutes\n')[1]
-    match = split_starters_by_positions(match, starters)
+    try:
+        match = split_starters_by_positions(match, starters)
+    except:
+        pass
     match = register_substitutes(match, substitutes)
     return match
 
@@ -381,6 +384,7 @@ def crawling_and_create_match_database(match, link):
     except:
         pass
     match, driver = register_all_players(match, driver)
+    driver.close()
     return 'done'
 
 def get_latest_match_link(html):

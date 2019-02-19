@@ -90,18 +90,6 @@ class Match(models.Model):
     home_team_player_sub_5 = models.ForeignKey(Player, on_delete=models.CASCADE, null=True, related_name='home_team_player_sub_5')
     home_team_player_sub_6 = models.ForeignKey(Player, on_delete=models.CASCADE, null=True, related_name='home_team_player_sub_6')
     home_team_player_sub_7 = models.ForeignKey(Player, on_delete=models.CASCADE, null=True, related_name='home_team_player_sub_7')
-    # location of player's position 1st, 2nd, 3rd, 4th, 5th
-#    home_team_player_1_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_2_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_3_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_4_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_5_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_6_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_7_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_8_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_9_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_10_location = models.CharField(max_length=100, blank=True)
-#    home_team_player_11_location = models.CharField(max_length=100, blank=True)
     # goalkeeper, defender, midfielder, forward
     home_team_player_1_position = models.ForeignKey(PlayerPosition, on_delete=models.CASCADE, null=True, related_name='home_team_player_1_position')
     home_team_player_2_position = models.ForeignKey(PlayerPosition, on_delete=models.CASCADE, null=True, related_name='home_team_player_2_position')
@@ -129,6 +117,15 @@ class Match(models.Model):
     home_team_line_4_count = models.CharField(max_length=100, blank=True)
     home_team_line_5_count = models.CharField(max_length=100, blank=True)
     home_team_line_6_count = models.CharField(max_length=100, blank=True)
+    # season data
+    home_position = models.CharField(max_length=100, blank=True)
+    home_won = models.CharField(max_length=100, blank=True)
+    home_drawn = models.CharField(max_length=100, blank=True)
+    home_lost = models.CharField(max_length=100, blank=True)
+    home_avg_goal = models.CharField(max_length=100, blank=True)
+    home_avg_conceded = models.CharField(max_length=100, blank=True)
+    home_clean_sheet = models.CharField(max_length=100, blank=True)
+    home_change_created = models.CharField(max_length=100, blank=True)
     # away team name
     away_team_name = models.ForeignKey(TeamName, on_delete=models.CASCADE, null=True, related_name='away_team_name')
     # away team goal
@@ -153,18 +150,6 @@ class Match(models.Model):
     away_team_player_sub_5 = models.ForeignKey(Player, on_delete=models.CASCADE, null=True, related_name='away_team_player_sub_5')
     away_team_player_sub_6 = models.ForeignKey(Player, on_delete=models.CASCADE, null=True, related_name='away_team_player_sub_6')
     away_team_player_sub_7 = models.ForeignKey(Player, on_delete=models.CASCADE, null=True, related_name='away_team_player_sub_7')
-    # location of player's position 1st, 2nd, 3rd, 4th, 5th
-#    away_team_player_1_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_2_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_3_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_4_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_5_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_6_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_7_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_8_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_9_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_10_location = models.CharField(max_length=100, blank=True)
-#    away_team_player_11_location = models.CharField(max_length=100, blank=True)
     # goalkeeper, defender, midfielder, forward
     away_team_player_1_position = models.ForeignKey(PlayerPosition, on_delete=models.CASCADE, null=True, related_name='away_team_player_1_position')
     away_team_player_2_position = models.ForeignKey(PlayerPosition, on_delete=models.CASCADE, null=True, related_name='away_team_player_2_position')
@@ -192,6 +177,15 @@ class Match(models.Model):
     away_team_line_4_count = models.CharField(max_length=100, blank=True)
     away_team_line_5_count = models.CharField(max_length=100, blank=True)
     away_team_line_6_count = models.CharField(max_length=100, blank=True)
+    # season data
+    away_position = models.CharField(max_length=100, blank=True)
+    away_won = models.CharField(max_length=100, blank=True)
+    away_drawn = models.CharField(max_length=100, blank=True)
+    away_lost = models.CharField(max_length=100, blank=True)
+    away_avg_goal = models.CharField(max_length=100, blank=True)
+    away_avg_conceded = models.CharField(max_length=100, blank=True)
+    away_clean_sheet = models.CharField(max_length=100, blank=True)
+    away_change_created = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return '%s %s %s %s' % (self.match_date_weekday, self.match_date_day, self.match_date_month, self.match_date_year)

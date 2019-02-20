@@ -74,7 +74,7 @@ class DateWeekdayAdmin(admin.ModelAdmin):
 
 
 class MatchAdmin(admin.ModelAdmin):
-    list_display = ['match_date', 'teams', 'score', 'formation']
+    list_display = ['season', 'match_date', 'teams', 'position', 'win_rate', 'season_goal_conceded', 'clean_sheet', 'change_created', 'score', 'result']
     autocomplete_fields = ['home_team_player_1', 'home_team_player_2', 'home_team_player_3', 'home_team_player_4',
                            'home_team_player_5', 'home_team_player_6', 'home_team_player_7', 'home_team_player_8',
                            'home_team_player_9', 'home_team_player_10', 'home_team_player_11', 'home_team_player_sub_1',
@@ -86,6 +86,8 @@ class MatchAdmin(admin.ModelAdmin):
                            'away_team_player_sub_2', 'away_team_player_sub_3', 'away_team_player_sub_4', 'away_team_player_sub_5',
                            'away_team_player_sub_6', 'away_team_player_sub_7',
                            'home_team_name', 'away_team_name']
+    search_fields = ['season', 'home_team_name', 'away_team_name']
+    list_per_page = 15
 
 
     class Meta:
@@ -116,6 +118,54 @@ class MatchAdmin(admin.ModelAdmin):
         if obj.away_team_line_6_count != '0':
             away_team_formation = '%s-%s' % (away_team_formation, obj.away_team_line_6_count)
         return '%s : %s' % (home_team_formation, away_team_formation)
+
+    def position(self, obj):
+        try:
+            return '%s' % (- int(obj.home_position) + int(obj.away_position))
+        except:
+            return ''
+
+    def win_rate(self, obj):
+        try:
+            return '%.2f' % ((float(obj.home_won) / (float(obj.home_won) + float(obj.home_drawn) + float(obj.home_lost))) - (float(obj.away_won) / (float(obj.away_won) + float(obj.away_drawn) + float(obj.away_lost))))
+        except:
+            return ''
+
+    def season_goal_conceded(self, obj):
+        try:
+            return '%.2f' % (((float(obj.home_avg_goal) - float(obj.home_avg_conceded))) - ((float(obj.away_avg_goal) - float(obj.away_avg_conceded))))
+        except:
+            return ''
+
+    def clean_sheet(self, obj):
+        try:
+            return '%s' % (int(obj.home_clean_sheet) - int(obj.away_clean_sheet))
+        except:
+            return ''
+
+    def change_created(self, obj):
+        try:
+            return '%.2f' % (float(obj.home_change_created) - float(obj.away_change_created))
+        except:
+            return ''
+
+    def result(self, obj):
+        try:
+            if int(obj.home_team_goal) > int(obj.away_team_goal):
+                return 'H'
+            elif int(obj.home_team_goal) == int(obj.away_team_goal):
+                return 'D'
+            elif int(obj.home_team_goal) < int(obj.away_team_goal):
+                return 'A'
+        except:
+            return ''
+
+    position.short_description = '순위차이 (-)'
+    win_rate.short_description = '승률차이 (+)'
+    season_goal_conceded.short_description = '골득실차이 (+)'
+    clean_sheet.short_description = '무실점경기차이 (+)'
+    change_created.short_description = '찬스차이 (+)'
+
 
 
 admin.site.register(Match, MatchAdmin)

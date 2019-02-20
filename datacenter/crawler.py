@@ -13,6 +13,62 @@ from datacenter.models import TeamName
 from datacenter.models import Match
 
 
+def register_team_stats(match, driver):
+    stats = driver.find_elements_by_xpath('//*[@id="mainContent"]/div/section/div[2]/div[2]/div[1]/div/div/ul/li[3]')[0]
+
+    print(stats.get_attribute('outerHTML'))
+    stats.click()
+    time.sleep(3)
+    print('click stats')
+    head_to_head = stats.find_elements_by_xpath('//*[@id="mainContent"]/div/section/div[2]/div[2]/div[2]/section[3]/div[1]/ul/ul/li[1]')[0]
+    print(head_to_head.get_attribute('outerHTML'))
+    print(head_to_head.text)
+    head_to_head.click()
+    time.sleep(3)
+    print('click head-to-head')
+    container = head_to_head.find_elements_by_xpath('//*[@id="mainContent"]/div/section/div[2]/div[2]/div[2]/section[3]/div[2]/div[1]/div[2]/section/table/tbody')[0]
+    rows = container.text.split('\n')
+
+    i = 0
+    for row in rows:
+        fields = row.split(' ')
+
+        home_value = fields[0]
+        away_value = fields[len(fields) - 1]
+
+        print('%s vs %s' % (home_value, away_value))
+
+        if not match.home_position:
+            match.home_position = home_value
+            match.away_position = away_value
+        elif not match.home_won:
+            match.home_won = home_value
+            match.away_won = away_value
+        elif not match.home_drawn:
+            match.home_drawn = home_value
+            match.away_drawn = away_value
+        elif not match.home_lost:
+            match.home_lost = home_value
+            match.away_lost = away_value
+        elif not match.home_avg_goal:
+            match.home_avg_goal = home_value
+            match.away_avg_goal = away_value
+        elif not match.home_avg_conceded:
+            match.home_avg_conceded = home_value
+            match.away_avg_conceded = away_value
+        elif not match.home_clean_sheet:
+            match.home_clean_sheet = home_value
+            match.away_clean_sheet = away_value
+        elif not match.home_change_created:
+            match.home_change_created = home_value
+            match.away_change_created = away_value
+        i = i + 1
+        if i == len(rows) - 2:
+            break
+    match.save()
+    return match, driver
+
+
 def register_substitute(match, player, position):
     try:
         position, created = PlayerPosition.objects.get_or_create(position=position)
@@ -281,7 +337,7 @@ def register_formations(match, driver):
 
 def click_line_up_button(driver, link):
     driver.get(link)
-    time.sleep(2)
+    time.sleep(3)
     while True:
         try:
             driver.find_elements_by_class_name("matchCentreSquadLabelContainer")[0].click()
@@ -289,7 +345,7 @@ def click_line_up_button(driver, link):
             break
         except:
             pass
-    time.sleep(2)
+    time.sleep(3)
     return driver
 
 
@@ -384,6 +440,7 @@ def crawling_and_create_match_database(match, link):
     except:
         pass
     match, driver = register_all_players(match, driver)
+    match, driver = register_team_stats(match, driver)
     driver.close()
     return 'done'
 
